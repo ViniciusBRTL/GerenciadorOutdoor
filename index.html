@@ -14,8 +14,8 @@
 <link rel="apple-touch-icon" href="icon-192.png">
 <style>
 :root{
-  --ink:#141414; --ink-2:#2a2a2a; --paper:#f4f4f2; --card:#ffffff; --line:#1c1c1c;
-  --muted:#6b6b6b; --accent:#e11d2e; --radius:10px;
+  --ink:#141414; --ink-2:#2a2a2a; --paper:#f4f4f2; --card:#ffffff;
+  --muted:#6b6b6b; --accent:#e11d2e; --radius:10px; --maxw:1280px;
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
@@ -26,6 +26,7 @@ body{
 }
 button,input,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
+button:disabled{cursor:default}
 
 /* ---------- Cabeçalho ---------- */
 .topbar{
@@ -40,7 +41,7 @@ button{cursor:pointer}
   font-weight:900; font-size:26px; letter-spacing:.02em; padding:0;
 }
 .titlebar{
-  max-width:900px; margin:0 auto; padding:14px 16px 6px;
+  max-width:var(--maxw); margin:0 auto; padding:14px 16px 6px;
   display:flex; align-items:center; gap:14px;
 }
 .titlebar h1{
@@ -61,7 +62,7 @@ button{cursor:pointer}
   backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
   border-bottom:1px solid #ddd;
 }
-.searchbar .inner{max-width:900px;margin:0 auto;padding:10px 16px;display:flex;gap:8px;align-items:center}
+.searchbar .inner{max-width:var(--maxw);margin:0 auto;padding:10px 16px;display:flex;gap:8px;align-items:center}
 .search{
   flex:1; display:flex; align-items:center; gap:8px; background:#fff;
   border:2px solid var(--ink); border-radius:999px; padding:0 14px; height:44px;
@@ -72,36 +73,30 @@ button{cursor:pointer}
   width:44px;height:44px;flex:none;border-radius:50%;border:2px solid var(--ink);background:#fff;
   display:grid;place-items:center;font-size:20px;font-weight:900;line-height:1;
 }
-.count{max-width:900px;margin:0 auto;padding:10px 16px 0;color:var(--muted);font-size:13px}
+.count{max-width:var(--maxw);margin:0 auto;padding:10px 16px 0;color:var(--muted);font-size:13px}
 
-/* ---------- Lista / cartões ---------- */
-.list{max-width:900px;margin:0 auto;padding:8px 16px;display:flex;flex-direction:column;gap:22px}
+/* ---------- Grade de cartões (3 por linha) ---------- */
+.list{
+  max-width:var(--maxw);margin:0 auto;padding:10px 16px;
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;align-items:start;
+}
+@media(max-width:960px){.list{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){.list{grid-template-columns:minmax(0,1fr)}}
+
 .card{
   background:var(--card); border-radius:var(--radius); padding:12px 14px 16px;
   box-shadow:0 1px 0 rgba(0,0,0,.06),0 6px 18px rgba(0,0,0,.05);
-  scroll-margin-top:80px;
+  scroll-margin-top:80px; min-width:0;
 }
+.card.editing{outline:3px solid var(--accent);outline-offset:-1px}
 .card.flash{animation:flash 1.6s ease-out}
 @keyframes flash{0%{box-shadow:0 0 0 4px var(--accent)}100%{box-shadow:0 0 0 0 transparent}}
-.head{display:flex;align-items:flex-start;gap:6px;margin-bottom:10px;font-size:15px}
-.head .lbl{font-weight:800;padding-top:5px;white-space:nowrap}
-.code-in{
-  width:5.2ch;border:0;border-bottom:1px dashed #bbb;background:transparent;font-weight:800;
-  font-size:15px;padding:4px 0;text-align:center;
+.edit-banner{
+  background:var(--accent);color:#fff;margin:-12px -14px 12px;padding:6px 14px;font-size:12px;font-weight:800;
+  letter-spacing:.07em;text-transform:uppercase;border-radius:9px 9px 0 0;
 }
-.dash{padding-top:5px}
-.addr{
-  flex:1;min-width:0;border:0;border-bottom:1px dashed #bbb;background:transparent;resize:none;
-  padding:4px 0;font-size:15px;line-height:1.35;overflow:hidden;outline:0;
-}
-.code-in:focus,.addr:focus{border-bottom-color:var(--ink);outline:0}
-.del{
-  flex:none;border:0;background:transparent;color:var(--muted);font-size:20px;line-height:1;
-  padding:4px 6px;border-radius:6px;
-}
-.del:hover{color:var(--accent);background:#fdecee}
-.body{display:grid;grid-template-columns:1fr;gap:14px}
-@media(min-width:640px){.body{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:18px}}
+
+/* foto */
 .photo{
   position:relative;border:0;padding:0;background:#e7e7e4;border-radius:8px;overflow:hidden;
   aspect-ratio:4/3;width:100%;display:block;
@@ -109,37 +104,83 @@ button{cursor:pointer}
 .photo img{width:100%;height:100%;object-fit:cover;display:block}
 .photo .ph{position:absolute;inset:0;display:grid;place-items:center;color:var(--muted);font-size:14px;text-align:center;padding:20px}
 .photo .badge{
-  position:absolute;left:8px;bottom:8px;min-width:54px;height:54px;padding:0 8px;border-radius:999px;
-  background:var(--ink);color:#fff;display:grid;place-items:center;font-weight:900;font-size:22px;
+  position:absolute;left:8px;bottom:8px;min-width:50px;height:50px;padding:0 8px;border-radius:999px;
+  background:var(--ink);color:#fff;display:grid;place-items:center;font-weight:900;font-size:20px;
   letter-spacing:.02em;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.35);
 }
-.photo .cam{
+.photo .zoom{
   position:absolute;right:8px;bottom:8px;background:rgba(0,0,0,.65);color:#fff;font-size:12px;
-  padding:6px 10px;border-radius:999px;
+  padding:5px 10px;border-radius:999px;
 }
-.periods{display:flex;flex-direction:column;gap:2px}
+
+/* modo visualização */
+.info{margin-top:10px}
+.title-row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.title-row strong{font-size:17px}
+.addr-text{margin-top:4px;font-size:14px;line-height:1.4;color:var(--ink-2);overflow-wrap:anywhere}
+.pv{display:flex;flex-direction:column;gap:10px;margin-top:14px;border-top:1px solid #eee;padding-top:12px}
+.pv-row{display:flex;flex-direction:column;gap:3px}
+.pv-label{font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.pv-text{font-size:15px;font-weight:600;padding-bottom:4px;border-bottom:1px solid #dcdcd8;min-height:1.5em;overflow-wrap:anywhere}
+.pv-text.blank{color:#b5b5b0;font-weight:400}
+
+/* modo edição */
+.photo-actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.f{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:800;color:var(--ink-2);margin-top:12px}
+.f-in{
+  width:100%;border:2px solid var(--ink);border-radius:8px;padding:9px 11px;font-size:16px;font-weight:400;
+  background:#fff;resize:vertical;
+}
+.f-in:focus{outline:0;border-color:var(--accent)}
+.pe{display:flex;flex-direction:column;gap:2px;margin-top:14px}
+.pe-title{font-size:12px;font-weight:800;color:var(--ink-2)}
 .period{position:relative;padding-bottom:6px}
 .period .plabel{
   width:100%;border:0;background:transparent;font-weight:800;text-transform:uppercase;font-size:13px;
-  letter-spacing:.04em;padding:4px 24px 0 0;outline:0;
+  letter-spacing:.04em;padding:6px 26px 0 0;outline:0;
 }
+.period .plabel:focus{color:var(--accent)}
 .period .ptext{
-  width:100%;border:0;border-bottom:2px solid var(--ink);background:transparent;padding:6px 0 4px;
-  font-size:16px;outline:0;border-radius:0;
+  width:100%;border:2px solid var(--ink);border-radius:8px;background:#fff;padding:8px 10px;
+  font-size:16px;outline:0;
 }
-.period .ptext:focus{border-bottom-color:var(--accent)}
+.period .ptext:focus{border-color:var(--accent)}
 .period .prm{
-  position:absolute;right:0;top:0;border:0;background:transparent;color:var(--muted);
-  font-size:16px;padding:2px 6px;opacity:.55;
+  position:absolute;right:0;top:2px;border:0;background:transparent;color:var(--muted);
+  font-size:18px;padding:2px 6px;opacity:.7;
 }
 .period .prm:hover{opacity:1;color:var(--accent)}
+.edit-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;align-items:center}
+.edit-actions .spacer{flex:1}
+
+/* botões */
+.chip{
+  display:inline-flex;align-items:center;gap:4px;border:1.5px solid var(--ink);background:#fff;color:var(--ink);
+  border-radius:999px;padding:7px 12px;font-size:13px;font-weight:700;text-decoration:none;line-height:1.2;
+}
+.chip.primary{background:var(--ink);color:#fff}
+.chip:disabled{opacity:.5}
+.btn{border:2px solid var(--ink);background:#fff;border-radius:999px;padding:10px 18px;font-weight:700}
+.btn.primary{background:var(--ink);color:#fff}
+.btn.danger{border-color:var(--accent);color:var(--accent)}
+.btn[hidden]{display:none}
 .addp{
   margin-top:6px;align-self:flex-start;border:1px dashed #999;background:transparent;color:var(--muted);
   border-radius:999px;padding:6px 12px;font-size:13px;
 }
 .addp:hover{color:var(--ink);border-color:var(--ink)}
 
-.sentinel{height:60px;display:grid;place-items:center;color:var(--muted);font-size:13px}
+/* localização */
+.loc{margin-top:10px;display:flex;flex-direction:column;gap:8px}
+.loc-coord{font-size:13px;font-weight:700;font-variant-numeric:tabular-nums}
+.loc-actions{display:flex;flex-wrap:wrap;gap:6px}
+.loc-hint{font-size:12px;color:var(--muted)}
+.loc-map{width:100%;aspect-ratio:4/3;border:0;border-radius:8px;background:#e7e7e4}
+.msg{font-size:13px;color:var(--ink-2);line-height:1.4}
+.msg:empty{display:none}
+.msg.err{color:var(--accent)}
+
+.sentinel{grid-column:1/-1;height:60px;display:grid;place-items:center;color:var(--muted);font-size:13px}
 .empty{text-align:center;color:var(--muted);padding:60px 20px}
 .empty strong{display:block;color:var(--ink);font-size:18px;margin-bottom:6px}
 
@@ -157,11 +198,11 @@ dialog{
   border:0;border-radius:14px;padding:0;width:min(520px,calc(100vw - 24px));max-height:calc(100dvh - 24px);
   box-shadow:0 20px 60px rgba(0,0,0,.35);color:var(--ink);
 }
-dialog::backdrop{background:rgba(0,0,0,.5)}
+dialog::backdrop{background:rgba(0,0,0,.55)}
 .dlg{padding:18px;display:flex;flex-direction:column;gap:14px}
 .dlg h2{margin:0;font-size:20px}
 .field{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:700;color:var(--ink-2)}
-.field input[type=text],.field textarea{
+.field input[type=text]{
   border:2px solid var(--ink);border-radius:8px;padding:10px 12px;font-size:16px;font-weight:400;background:#fff;
 }
 .row{display:flex;gap:10px}
@@ -169,15 +210,17 @@ dialog::backdrop{background:rgba(0,0,0,.5)}
 .row .field:last-child{flex:1}
 .pick{
   border:2px dashed #999;border-radius:8px;background:#f2f2ef;aspect-ratio:16/9;display:grid;place-items:center;
-  color:var(--muted);font-size:14px;overflow:hidden;padding:0;width:100%;
+  color:var(--muted);font-size:14px;overflow:hidden;padding:0;width:100%;font-weight:400;
 }
 .pick img{width:100%;height:100%;object-fit:cover}
 .actions{display:flex;gap:10px;justify-content:flex-end;margin-top:2px}
-.btn{border:2px solid var(--ink);background:#fff;border-radius:999px;padding:10px 18px;font-weight:700}
-.btn.primary{background:var(--ink);color:#fff}
 .menu-list{display:flex;flex-direction:column;gap:10px}
 .menu-list .btn{text-align:left;border-radius:10px}
 .hint{font-size:12px;color:var(--muted);line-height:1.45;margin:0}
+#camVideo{width:100%;max-height:60vh;background:#000;border-radius:10px}
+.img-dlg{width:min(960px,96vw);background:#111;color:#fff;padding:10px;text-align:center}
+.img-dlg img{max-width:100%;max-height:80dvh;object-fit:contain;display:block;margin:0 auto;border-radius:8px}
+.img-dlg p{margin:8px 0 0;font-size:13px;opacity:.85}
 
 .toast{
   position:fixed;left:50%;bottom:calc(88px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);
@@ -232,14 +275,64 @@ dialog::backdrop{background:rgba(0,0,0,.5)}
       </label>
     </div>
     <div class="field">Foto do outdoor
-      <button type="button" class="pick" id="nPick">Toque para tirar ou escolher uma foto</button>
-      <input type="file" id="nFile" accept="image/*" hidden>
+      <div class="pick" id="nPrev">Nenhuma foto ainda</div>
+      <div class="loc-actions">
+        <button type="button" class="chip primary" id="nCam">📷 Tirar foto</button>
+        <button type="button" class="chip" id="nGal">🖼 Escolher da galeria</button>
+      </div>
+    </div>
+    <div class="field">Localização exata no Google Maps (opcional)
+      <input type="text" id="nLoc" placeholder="Cole o link do Maps ou as coordenadas">
+      <div class="loc-actions">
+        <button type="button" class="chip" id="nGps">📍 Usar minha posição atual</button>
+        <button type="button" class="chip" id="nMaps">Buscar endereço no Maps</button>
+      </div>
+      <div class="msg" id="nLocMsg"></div>
     </div>
     <div class="actions">
       <button type="button" class="btn" id="nCancel">Cancelar</button>
       <button type="submit" class="btn primary">Salvar ponto</button>
     </div>
   </form>
+</dialog>
+
+<!-- Localização de um ponto -->
+<dialog id="locDlg">
+  <div class="dlg">
+    <h2>Localização exata</h2>
+    <p class="hint">Se você está <strong>em frente ao outdoor</strong>, use o GPS. Se não, abra o Google Maps, toque e segure no local do outdoor, copie as coordenadas (ou o link) e cole abaixo.</p>
+    <div class="loc-actions">
+      <button type="button" class="chip" id="locGps">📍 Usar minha posição atual</button>
+      <button type="button" class="chip" id="locMaps">Buscar endereço no Maps</button>
+    </div>
+    <label class="field">Link do Google Maps ou coordenadas
+      <input type="text" id="locInput" placeholder="-21.29270, -50.34010" autocomplete="off" autocapitalize="off" spellcheck="false">
+    </label>
+    <div class="msg" id="locMsg"></div>
+    <div class="actions">
+      <button type="button" class="btn" id="locRemove" hidden>Remover</button>
+      <button type="button" class="btn" id="locCancel">Cancelar</button>
+      <button type="button" class="btn primary" id="locSave">Usar esta localização</button>
+    </div>
+  </div>
+</dialog>
+
+<!-- Câmera (computador) -->
+<dialog id="camDlg">
+  <div class="dlg">
+    <h2>Tirar foto</h2>
+    <video id="camVideo" playsinline muted autoplay></video>
+    <div class="actions">
+      <button type="button" class="btn" id="camCancel">Cancelar</button>
+      <button type="button" class="btn primary" id="camShot">📸 Capturar</button>
+    </div>
+  </div>
+</dialog>
+
+<!-- Foto ampliada -->
+<dialog id="imgDlg" class="img-dlg">
+  <img id="imgBig" alt="">
+  <p id="imgCap"></p>
 </dialog>
 
 <!-- Menu / backup -->
@@ -262,7 +355,7 @@ dialog::backdrop{background:rgba(0,0,0,.5)}
 (() => {
 'use strict';
 
-const PAGE = 8;
+const PAGE = 12; // múltiplo de 1, 2 e 3 colunas
 const DEFAULT_PERIODS = ['Outubro','Novembro','Dezembro','Janeiro'];
 const $ = (s, r = document) => r.querySelector(s);
 
@@ -278,14 +371,19 @@ function el(tag, props = {}, ...kids) {
   return n;
 }
 const debounce = (fn, ms) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; };
-const norm = s => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+const norm = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 const uid = () => (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2));
 let toastTimer;
 function toast(msg) {
   const t = $('#toast'); t.textContent = msg; t.classList.add('show');
-  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 1800);
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 2000);
 }
-const autoGrow = ta => { ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; };
+const chip = (text, onClick, primary) => {
+  const b = el('button', { type: 'button', className: 'chip' + (primary ? ' primary' : ''), textContent: text });
+  b.addEventListener('click', onClick); return b;
+};
+const chipLink = (text, href, primary) =>
+  el('a', { className: 'chip' + (primary ? ' primary' : ''), href, target: '_blank', rel: 'noopener', textContent: text });
 
 /* ---------- banco local (IndexedDB) ---------- */
 const DB = (() => {
@@ -341,7 +439,7 @@ const nextCode = () => {
   return String((nums.length ? Math.max(...nums) : 0) + 1).padStart(3, '0');
 };
 
-/* ---------- imagem ---------- */
+/* ---------- fotos: câmera e galeria ---------- */
 async function compress(file, max = 1600, quality = 0.82) {
   const url = URL.createObjectURL(file);
   try {
@@ -354,90 +452,323 @@ async function compress(file, max = 1600, quality = 0.82) {
   } finally { URL.revokeObjectURL(url); }
 }
 
-/* ---------- persistência de um ponto ---------- */
+// Abre o seletor de arquivo. Com capture=true, celulares abrem a câmera traseira direto.
+function pickFile(capture) {
+  return new Promise(res => {
+    const i = document.createElement('input');
+    i.type = 'file'; i.accept = 'image/*'; i.hidden = true;
+    if (capture) i.setAttribute('capture', 'environment');
+    const end = f => { i.remove(); res(f || null); };
+    i.addEventListener('change', () => end(i.files[0]));
+    i.addEventListener('cancel', () => end(null));
+    document.body.append(i);
+    i.click();
+  });
+}
+
+// Computador: abre a webcam dentro do app. Devolve um Blob JPEG ou null.
+function webcamShot() {
+  return new Promise(async res => {
+    const dlg = $('#camDlg'), video = $('#camVideo');
+    let stream = null, done = false;
+    const finish = blob => {
+      if (done) return; done = true;
+      if (stream) stream.getTracks().forEach(t => t.stop());
+      video.srcObject = null; if (dlg.open) dlg.close(); res(blob);
+    };
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' }, width: { ideal: 1920 } }, audio: false });
+    } catch (e) {
+      toast('Não foi possível acessar a câmera. Verifique a permissão ou use a galeria.');
+      return finish(null);
+    }
+    video.srcObject = stream; dlg.showModal(); video.play().catch(() => {});
+    $('#camShot').onclick = () => {
+      if (!video.videoWidth) return;
+      const r = Math.min(1, 1600 / Math.max(video.videoWidth, video.videoHeight));
+      const c = document.createElement('canvas');
+      c.width = Math.round(video.videoWidth * r); c.height = Math.round(video.videoHeight * r);
+      c.getContext('2d').drawImage(video, 0, 0, c.width, c.height);
+      c.toBlob(b => finish(b), 'image/jpeg', 0.85);
+    };
+    $('#camCancel').onclick = () => finish(null);
+    dlg.onclose = () => finish(null);
+  });
+}
+
+const isTouch = () => !!(window.matchMedia && matchMedia('(pointer: coarse)').matches);
+async function fromCamera() {
+  if (isTouch() || !(navigator.mediaDevices && navigator.mediaDevices.getUserMedia)) {
+    const f = await pickFile(true); return f ? compress(f) : null;
+  }
+  return webcamShot();
+}
+async function fromGallery() { const f = await pickFile(false); return f ? compress(f) : null; }
+
+const imgDlg = $('#imgDlg');
+imgDlg.addEventListener('click', () => imgDlg.close());
+function openImage(src, caption) { $('#imgBig').src = src; $('#imgCap').textContent = caption || ''; imgDlg.showModal(); }
+
+/* ---------- persistência ---------- */
 const persist = async p => {
   p.updatedAt = Date.now();
-  try { await DB.put(p); toast('Salvo'); }
-  catch (e) { toast('Erro ao salvar: espaço insuficiente?'); }
+  try { await DB.put(p); toast('Salvo'); return true; }
+  catch (e) { toast('Erro ao salvar: espaço insuficiente?'); return false; }
 };
 
-/* ---------- cartão ---------- */
+/* ---------- localização (Google Maps) ---------- */
+const hasLoc = p => Number.isFinite(p.lat) && Number.isFinite(p.lng);
+const pinUrl = p => `https://www.google.com/maps/search/?api=1&query=${p.lat},${p.lng}`;
+const dirUrl = p => `https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lng}`;
+const embedUrl = p => `https://www.google.com/maps?q=${p.lat},${p.lng}&z=17&output=embed`;
+
+function openMapsSearch(address) {
+  const q = [address, settings.city].filter(s => s && s.trim()).join(', ');
+  if (!q) { toast('Preencha o endereço primeiro'); return; }
+  window.open('https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(q), '_blank', 'noopener');
+}
+
+// Aceita: "-21.29, -50.34", links do Google Maps (@lat,lng / !3d!4d / ?q=lat,lng)
+function parseLocation(text) {
+  let t = String(text || '').trim();
+  if (!t) return { empty: true };
+  if (/maps\.app\.goo\.gl|goo\.gl\/maps/i.test(t))
+    return { error: 'Esse é um link curto e não dá para ler a posição dele. Abra o link, copie o endereço completo da barra do navegador e cole aqui.' };
+  try { t = decodeURIComponent(t); } catch (e) {}
+  const num = '(-?\\d+(?:\\.\\d+)?)';
+  const pats = [
+    new RegExp('!3d' + num + '!4d' + num),
+    new RegExp('@' + num + ',' + num),
+    new RegExp('[?&](?:q|query|ll|destination|daddr)=' + num + '[,+\\s]+' + num),
+    new RegExp('^\\s*' + num + '\\s*[,;\\s]\\s*' + num + '\\s*$'),
+  ];
+  for (const re of pats) {
+    const m = t.match(re);
+    if (m) {
+      const lat = parseFloat(m[1]), lng = parseFloat(m[2]);
+      if (Math.abs(lat) <= 90 && Math.abs(lng) <= 180) return { lat, lng };
+    }
+  }
+  return { error: 'Não consegui entender. Cole um link do Google Maps ou as coordenadas, como -21.29270, -50.34010.' };
+}
+
+const getPosition = () => new Promise((res, rej) => {
+  if (!navigator.geolocation) return rej(new Error('sem-gps'));
+  navigator.geolocation.getCurrentPosition(pos => res(pos.coords), rej, { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 });
+});
+const msgSetter = id => (text, err) => { const m = $(id); m.textContent = text || ''; m.classList.toggle('err', !!err); };
+
+async function fillFromGps(input, setMsg, btn) {
+  btn.disabled = true; setMsg('Obtendo posição… permita o acesso à localização se o navegador perguntar.');
+  try {
+    const c = await getPosition();
+    input.value = c.latitude.toFixed(6) + ', ' + c.longitude.toFixed(6);
+    setMsg('Posição obtida (precisão de cerca de ' + Math.round(c.accuracy) + ' m).' +
+      (c.accuracy > 50 ? ' Para mais precisão, vá para um lugar aberto e tente de novo.' : ''));
+  } catch (e) {
+    setMsg(e && e.code === 1
+      ? 'Permissão de localização negada. Libere o acesso nas configurações do navegador.'
+      : 'Não foi possível obter a posição agora. Cole as coordenadas ou o link manualmente.', true);
+  } finally { btn.disabled = false; }
+}
+
+const locDlg = $('#locDlg');
+const setLocMsg = msgSetter('#locMsg');
+let locTarget = null;
+function openLocDialog(t, done) {
+  locTarget = { t, done };
+  $('#locInput').value = hasLoc(t) ? t.lat + ', ' + t.lng : '';
+  setLocMsg(''); $('#locRemove').hidden = !hasLoc(t);
+  locDlg.showModal();
+}
+
+// t = objeto com lat/lng/address (o ponto, ou o rascunho em edição)
+function makeLoc(t, editable) {
+  const box = el('div', { className: 'loc' });
+  let mapOpen = false;
+  const paint = () => {
+    box.replaceChildren();
+    if (hasLoc(t)) {
+      const row = el('div', { className: 'loc-actions' },
+        chipLink('Abrir no Maps', pinUrl(t), true),
+        chipLink('Como chegar', dirUrl(t)),
+        chip(mapOpen ? 'Ocultar mapa' : 'Ver mapa', () => { mapOpen = !mapOpen; paint(); }));
+      if (editable) row.append(chip('Alterar', () => openLocDialog(t, paint)));
+      box.append(el('div', { className: 'loc-coord', textContent: '📍 ' + t.lat.toFixed(5) + ', ' + t.lng.toFixed(5) }), row);
+      if (mapOpen) box.append(el('iframe', {
+        className: 'loc-map', src: embedUrl(t), loading: 'lazy',
+        title: 'Mapa do ponto ' + t.code, referrerPolicy: 'no-referrer-when-downgrade',
+      }));
+    } else {
+      const row = el('div', { className: 'loc-actions' });
+      if (editable) row.append(chip('📍 Definir localização', () => openLocDialog(t, paint), true));
+      row.append(chip('Ver endereço no Maps', () => openMapsSearch(t.address)));
+      box.append(row, el('div', { className: 'loc-hint', textContent: 'Ainda sem localização exata.' }));
+    }
+  };
+  paint();
+  return box;
+}
+
+$('#locGps').addEventListener('click', e => fillFromGps($('#locInput'), setLocMsg, e.currentTarget));
+$('#locMaps').addEventListener('click', () => openMapsSearch(locTarget && locTarget.t.address));
+$('#locCancel').addEventListener('click', () => locDlg.close());
+$('#locRemove').addEventListener('click', () => {
+  if (!locTarget) return;
+  const { t, done } = locTarget; t.lat = null; t.lng = null; done(); locDlg.close();
+});
+$('#locSave').addEventListener('click', () => {
+  if (!locTarget) return;
+  const r = parseLocation($('#locInput').value);
+  if (r.empty) return setLocMsg('Use o GPS ou cole um link/coordenadas.', true);
+  if (r.error) return setLocMsg(r.error, true);
+  const { t, done } = locTarget; t.lat = r.lat; t.lng = r.lng; done(); locDlg.close();
+});
+
+/* ---------- cartão: visualização e edição ---------- */
 function makeCard(p) {
   const card = el('article', { className: 'card', dataset: { id: p.id } });
-  const save = debounce(() => persist(p), 400);
+  let editing = false, draft = null, tmp = null;
 
-  // cabeçalho: Ponto [001] - endereço
-  const code = el('input', { className: 'code-in', value: p.code, maxLength: 8, 'aria-label': 'Nº do ponto' });
-  const addr = el('textarea', { className: 'addr', rows: 1, value: p.address || '', placeholder: 'Endereço', 'aria-label': 'Endereço' });
-  const del = el('button', { className: 'del', type: 'button', title: 'Excluir ponto', textContent: '🗑', 'aria-label': 'Excluir ponto' });
-  card.append(el('div', { className: 'head' },
-    el('span', { className: 'lbl', textContent: 'Ponto' }), code,
-    el('span', { className: 'dash', textContent: '–' }), addr, del));
-
-  // foto + selo
-  const badge = el('span', { className: 'badge', textContent: p.code });
-  const file = el('input', { type: 'file', accept: 'image/*', hidden: true });
-  const photoBox = el('button', { type: 'button', className: 'photo', 'aria-label': 'Foto do outdoor' });
-  const paintPhoto = () => {
-    photoBox.replaceChildren();
-    const u = photoUrl(p);
-    if (u) photoBox.append(el('img', { src: u, alt: 'Foto do ponto ' + p.code, loading: 'lazy' }));
-    else photoBox.append(el('span', { className: 'ph', textContent: '📷 Toque para adicionar a foto do outdoor' }));
-    photoBox.append(badge);
-    if (u) photoBox.append(el('span', { className: 'cam', textContent: 'Trocar foto' }));
+  // endereço (URL) da foto do rascunho; reaproveita o do ponto quando não mudou
+  const srcOf = blob => {
+    if (!blob) return null;
+    if (blob === p.photo) return photoUrl(p);
+    if (!tmp || tmp.blob !== blob) { if (tmp) URL.revokeObjectURL(tmp.url); tmp = { blob, url: URL.createObjectURL(blob) }; }
+    return tmp.url;
   };
-  paintPhoto();
-  photoBox.addEventListener('click', () => file.click());
-  file.addEventListener('change', async () => {
-    const f = file.files[0]; file.value = '';
-    if (!f) return;
-    try { p.photo = await compress(f); paintPhoto(); persist(p); }
-    catch (e) { toast('Não foi possível ler essa imagem'); }
-  });
+  const dropTmp = () => { if (tmp) { URL.revokeObjectURL(tmp.url); tmp = null; } };
 
-  // períodos (meses)
-  const panel = el('div', { className: 'periods' });
-  const paintPeriods = (focusLast) => {
-    panel.replaceChildren();
-    p.periods.forEach((per, i) => {
-      const lab = el('input', { className: 'plabel', value: per.label, 'aria-label': 'Período' });
-      const txt = el('input', { className: 'ptext', value: per.text, placeholder: 'Arte / cliente deste período', 'aria-label': 'Arte ou cliente em ' + per.label });
-      const rm = el('button', { className: 'prm', type: 'button', textContent: '×', title: 'Remover período', 'aria-label': 'Remover período' });
-      lab.addEventListener('input', () => { per.label = lab.value; save(); });
-      txt.addEventListener('input', () => { per.text = txt.value; save(); });
-      rm.addEventListener('click', () => {
-        if ((per.text || '').trim() && !confirm('Remover "' + per.label + '" e o texto dele?')) return;
-        p.periods.splice(i, 1); paintPeriods(); persist(p);
+  const paint = () => {
+    card.replaceChildren();
+    card.classList.toggle('editing', editing);
+    editing ? paintEdit() : paintView();
+  };
+
+  const startEdit = () => {
+    draft = {
+      code: p.code, address: p.address || '', photo: p.photo || null,
+      lat: hasLoc(p) ? p.lat : null, lng: hasLoc(p) ? p.lng : null,
+      periods: p.periods.map(x => ({ label: x.label, text: x.text })),
+    };
+    editing = true; paint();
+  };
+  const isDirty = () =>
+    draft.code !== p.code || draft.address !== (p.address || '') || draft.photo !== (p.photo || null) ||
+    draft.lat !== (hasLoc(p) ? p.lat : null) || draft.lng !== (hasLoc(p) ? p.lng : null) ||
+    JSON.stringify(draft.periods) !== JSON.stringify(p.periods);
+
+  /* ----- só leitura ----- */
+  function paintView() {
+    const src = photoUrl(p);
+    const photo = el('button', { type: 'button', className: 'photo', 'aria-label': 'Ampliar foto do ponto ' + p.code });
+    photo.append(src ? el('img', { src, alt: 'Foto do ponto ' + p.code, loading: 'lazy' }) : el('span', { className: 'ph', textContent: '📷 Sem foto' }));
+    photo.append(el('span', { className: 'badge', textContent: p.code }));
+    if (src) {
+      photo.append(el('span', { className: 'zoom', textContent: '🔍 Ampliar' }));
+      photo.addEventListener('click', () => openImage(src, 'Ponto ' + p.code + (p.address ? ' – ' + p.address : '')));
+    } else photo.disabled = true;
+
+    const periods = el('div', { className: 'pv' });
+    p.periods.forEach(per => periods.append(el('div', { className: 'pv-row' },
+      el('span', { className: 'pv-label', textContent: per.label }),
+      el('span', { className: 'pv-text' + (per.text ? '' : ' blank'), textContent: per.text || '—' }))));
+
+    card.append(
+      photo,
+      el('div', { className: 'info' },
+        el('div', { className: 'title-row' }, el('strong', { textContent: 'Ponto ' + p.code }), chip('✏️ Editar', startEdit)),
+        el('div', { className: 'addr-text', textContent: p.address || 'Sem endereço' })),
+      makeLoc(p, false),
+      periods);
+  }
+
+  /* ----- edição ----- */
+  function paintEdit() {
+    const badge = el('span', { className: 'badge', textContent: draft.code || '?' });
+    const photoBox = el('div', { className: 'photo' });
+    const paintPhoto = () => {
+      photoBox.replaceChildren();
+      const s = srcOf(draft.photo);
+      photoBox.append(s ? el('img', { src: s, alt: 'Foto do ponto' }) : el('span', { className: 'ph', textContent: '📷 Sem foto' }), badge);
+    };
+    paintPhoto();
+    const take = getter => async () => {
+      try { const b = await getter(); if (b) { draft.photo = b; paintPhoto(); } }
+      catch (e) { toast('Não foi possível ler essa imagem'); }
+    };
+
+    const code = el('input', { className: 'f-in', value: draft.code, maxLength: 8, 'aria-label': 'Nº do ponto' });
+    code.addEventListener('input', () => { draft.code = code.value.trim(); badge.textContent = draft.code || '?'; });
+    const addr = el('textarea', { className: 'f-in', rows: 2, value: draft.address, placeholder: 'Rua, nº – Bairro (referência)', 'aria-label': 'Endereço' });
+    addr.addEventListener('input', () => { draft.address = addr.value; });
+
+    const panel = el('div', { className: 'pe' });
+    const paintPeriods = focusLast => {
+      panel.replaceChildren(el('div', { className: 'pe-title', textContent: 'Arte / cliente por período' }));
+      draft.periods.forEach((per, i) => {
+        const lab = el('input', { className: 'plabel', value: per.label, 'aria-label': 'Período' });
+        const txt = el('input', { className: 'ptext', value: per.text, placeholder: 'Arte / cliente deste período', 'aria-label': 'Arte ou cliente em ' + per.label });
+        const rm = el('button', { className: 'prm', type: 'button', textContent: '×', title: 'Remover período', 'aria-label': 'Remover período' });
+        lab.addEventListener('input', () => { per.label = lab.value; });
+        txt.addEventListener('input', () => { per.text = txt.value; });
+        rm.addEventListener('click', () => {
+          if ((per.text || '').trim() && !confirm('Remover "' + per.label + '" e o texto dele?')) return;
+          draft.periods.splice(i, 1); paintPeriods();
+        });
+        panel.append(el('div', { className: 'period' }, lab, txt, rm));
       });
-      panel.append(el('div', { className: 'period' }, lab, txt, rm));
+      const add = el('button', { className: 'addp', type: 'button', textContent: '+ período' });
+      add.addEventListener('click', () => { draft.periods.push({ label: 'Novo período', text: '' }); paintPeriods(true); });
+      panel.append(add);
+      if (focusLast) { const ls = panel.querySelectorAll('.plabel'); const l = ls[ls.length - 1]; l.focus(); l.select(); }
+    };
+    paintPeriods();
+
+    const del = el('button', { type: 'button', className: 'btn danger', textContent: 'Excluir' });
+    const cancel = el('button', { type: 'button', className: 'btn', textContent: 'Cancelar' });
+    const save = el('button', { type: 'button', className: 'btn primary', textContent: 'Salvar' });
+
+    del.addEventListener('click', async () => {
+      if (!confirm('Excluir o ponto ' + p.code + '? Isso apaga a foto e os textos.')) return;
+      try { await DB.del(p.id); } catch (e) { toast('Erro ao excluir'); return; }
+      dropTmp();
+      const c = urlCache.get(p.id); if (c) { URL.revokeObjectURL(c.url); urlCache.delete(p.id); }
+      points = points.filter(x => x.id !== p.id);
+      filtered = filtered.filter(x => x.id !== p.id);
+      rendered = Math.max(0, rendered - 1);
+      card.remove(); updateCount(); updateEmpty(); toast('Ponto excluído');
     });
-    const add = el('button', { className: 'addp', type: 'button', textContent: '+ período' });
-    add.addEventListener('click', () => {
-      p.periods.push({ label: 'Novo período', text: '' });
-      paintPeriods(true); persist(p);
+    cancel.addEventListener('click', () => {
+      if (isDirty() && !confirm('Descartar as alterações deste ponto?')) return;
+      dropTmp(); editing = false; draft = null; paint();
     });
-    panel.append(add);
-    if (focusLast) { const ls = panel.querySelectorAll('.plabel'); const l = ls[ls.length - 1]; l.focus(); l.select(); }
-  };
-  paintPeriods();
+    save.addEventListener('click', async () => {
+      const codeV = draft.code.trim(), addrV = draft.address.trim();
+      if (!codeV) { toast('Informe o nº do ponto'); code.focus(); return; }
+      if (!addrV) { toast('Informe o endereço'); addr.focus(); return; }
+      if (points.some(x => x.id !== p.id && x.code === codeV) && !confirm('Já existe um ponto ' + codeV + '. Salvar mesmo assim?')) return;
+      const before = { code: p.code, address: p.address, photo: p.photo, lat: p.lat, lng: p.lng, periods: p.periods };
+      Object.assign(p, {
+        code: codeV, address: addrV, photo: draft.photo, lat: draft.lat, lng: draft.lng,
+        periods: draft.periods.map(x => ({ label: (x.label || '').trim() || 'Período', text: x.text })),
+      });
+      if (!(await persist(p))) { Object.assign(p, before); return; }
+      dropTmp(); editing = false; draft = null; sortPoints(); paint();
+    });
 
-  card.append(el('div', { className: 'body' }, el('div', {}, photoBox, file), panel));
+    card.append(
+      el('div', { className: 'edit-banner', textContent: 'Editando ponto ' + p.code }),
+      photoBox,
+      el('div', { className: 'photo-actions' }, chip('📷 Tirar foto', take(fromCamera), true), chip('🖼 Galeria', take(fromGallery))),
+      el('label', { className: 'f' }, 'Nº do ponto', code),
+      el('label', { className: 'f' }, 'Endereço', addr),
+      makeLoc(draft, true),
+      panel,
+      el('div', { className: 'edit-actions' }, del, el('span', { className: 'spacer' }), cancel, save));
+  }
 
-  // eventos do cabeçalho
-  code.addEventListener('input', () => { p.code = code.value.trim(); badge.textContent = p.code; save(); });
-  code.addEventListener('change', () => { sortPoints(); });
-  addr.addEventListener('input', () => { p.address = addr.value; autoGrow(addr); save(); });
-  del.addEventListener('click', async () => {
-    if (!confirm('Excluir o ponto ' + p.code + '? Isso apaga a foto e os textos.')) return;
-    await DB.del(p.id);
-    const c = urlCache.get(p.id); if (c) { URL.revokeObjectURL(c.url); urlCache.delete(p.id); }
-    points = points.filter(x => x.id !== p.id);
-    filtered = filtered.filter(x => x.id !== p.id);
-    rendered = Math.max(0, rendered - 1);
-    card.remove(); updateCount(); updateEmpty(); toast('Ponto excluído');
-  });
-
-  requestAnimationFrame(() => autoGrow(addr));
+  paint();
   return card;
 }
 
@@ -455,8 +786,7 @@ function renderMore(n = PAGE) {
   list.append(frag);
   rendered += slice.length;
   sentinel.textContent = rendered < filtered.length ? 'Carregando mais pontos…' : '';
-  // re-observa para disparar de novo se o sentinela continuar visível
-  io.unobserve(sentinel); io.observe(sentinel);
+  io.unobserve(sentinel); io.observe(sentinel); // re-checa se o sentinela ainda está visível
 }
 
 function applyFilter() {
@@ -479,7 +809,7 @@ function updateCount() {
 function updateEmpty() {
   let e = $('#emptyMsg');
   if (filtered.length) { if (e) e.remove(); return; }
-  if (!e) { e = el('div', { className: 'empty', id: 'emptyMsg' }); list.after(e); }
+  if (!e) { e = el('div', { className: 'empty', id: 'emptyMsg' }); $('main').append(e); }
   e.replaceChildren();
   if (!points.length) e.append(el('strong', { textContent: 'Nenhum ponto cadastrado ainda' }), 'Toque em “+ Novo ponto” para começar.');
   else e.append(el('strong', { textContent: 'Nenhum ponto encontrado' }), 'Tente buscar por outro número, endereço ou cliente.');
@@ -488,32 +818,38 @@ function updateEmpty() {
 $('#q').addEventListener('input', debounce(applyFilter, 150));
 
 /* ---------- novo ponto ---------- */
-const addDlg = $('#addDlg'), nFile = $('#nFile'), nPick = $('#nPick');
+const addDlg = $('#addDlg');
+const setNLocMsg = msgSetter('#nLocMsg');
 let newPhoto = null, newPreview = null;
 
-function resetAddForm() {
-  $('#nCode').value = nextCode(); $('#nAddr').value = '';
-  newPhoto = null; if (newPreview) { URL.revokeObjectURL(newPreview); newPreview = null; }
-  nPick.replaceChildren('Toque para tirar ou escolher uma foto');
+function showNewPreview() {
+  if (newPreview) { URL.revokeObjectURL(newPreview); newPreview = null; }
+  const prev = $('#nPrev');
+  if (!newPhoto) { prev.replaceChildren('Nenhuma foto ainda'); return; }
+  newPreview = URL.createObjectURL(newPhoto);
+  prev.replaceChildren(el('img', { src: newPreview, alt: 'Pré-visualização' }));
 }
+function resetAddForm() {
+  $('#nCode').value = nextCode(); $('#nAddr').value = ''; $('#nLoc').value = ''; setNLocMsg('');
+  newPhoto = null; showNewPreview();
+}
+const takeNew = getter => async () => {
+  try { const b = await getter(); if (b) { newPhoto = b; showNewPreview(); } }
+  catch (e) { toast('Não foi possível ler essa imagem'); }
+};
 $('#addBtn').addEventListener('click', () => { resetAddForm(); addDlg.showModal(); });
 $('#nCancel').addEventListener('click', () => addDlg.close());
-nPick.addEventListener('click', () => nFile.click());
-nFile.addEventListener('change', async () => {
-  const f = nFile.files[0]; nFile.value = '';
-  if (!f) return;
-  try {
-    newPhoto = await compress(f);
-    if (newPreview) URL.revokeObjectURL(newPreview);
-    newPreview = URL.createObjectURL(newPhoto);
-    nPick.replaceChildren(el('img', { src: newPreview, alt: 'Pré-visualização' }));
-  } catch (e) { toast('Não foi possível ler essa imagem'); }
-});
+$('#nCam').addEventListener('click', takeNew(fromCamera));
+$('#nGal').addEventListener('click', takeNew(fromGallery));
+$('#nGps').addEventListener('click', e => fillFromGps($('#nLoc'), setNLocMsg, e.currentTarget));
+$('#nMaps').addEventListener('click', () => openMapsSearch($('#nAddr').value));
 
 $('#addForm').addEventListener('submit', async ev => {
   ev.preventDefault();
   const codeVal = $('#nCode').value.trim(), addrVal = $('#nAddr').value.trim();
   if (!codeVal || !addrVal) return;
+  const loc = parseLocation($('#nLoc').value);
+  if (loc.error) { setNLocMsg(loc.error, true); $('#nLoc').focus(); return; }
   if (points.some(p => p.code === codeVal) && !confirm('Já existe um ponto ' + codeVal + '. Cadastrar mesmo assim?')) return;
 
   // repete os períodos do último ponto cadastrado (só os nomes)
@@ -521,6 +857,7 @@ $('#addForm').addEventListener('submit', async ev => {
   const labels = last ? last.periods.map(x => x.label) : DEFAULT_PERIODS;
   const p = {
     id: uid(), code: codeVal, address: addrVal, photo: newPhoto,
+    lat: loc.empty ? null : loc.lat, lng: loc.empty ? null : loc.lng,
     periods: labels.map(label => ({ label, text: '' })),
     createdAt: Date.now(), updatedAt: Date.now(),
   };

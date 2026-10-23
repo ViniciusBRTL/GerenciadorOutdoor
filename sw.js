@@ -1,5 +1,5 @@
 // Service worker: deixa o app abrir offline. Rede primeiro (para receber atualizações), cache como reserva.
-const CACHE = 'outdoor-v1';
+const CACHE = 'outdoor-v3';
 const ASSETS = ['./', './index.html', './manifest.webmanifest', './icon.svg', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', e => {
